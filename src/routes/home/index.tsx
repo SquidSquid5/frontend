@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import useAuthStore from "@/store/useAuthStore";
 
 export const Route = createFileRoute("/home/")({
 	component: Index,
 });
 
 function Index() {
-	return <div>index</div>;
+	const { isLoggedIn, token, userId, nickname } = useAuthStore();
+	console.log(token, userId, nickname, isLoggedIn);
+	// return <div>{isLoggedIn ? <p>index</p> : (window.location.href = "/")}</div>;
+	return <div>{isLoggedIn ? <p>index</p> : <p> 로그인 해주세용</p>}</div>;
 }
 
 export default Index;

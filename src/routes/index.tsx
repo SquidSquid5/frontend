@@ -1,13 +1,22 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
+
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import { useRef } from "react";
+import useAuthStore from "@/store/useAuthStore";
 
 export const Route = createFileRoute("/")({ component: App });
+
+interface loginType {
+	userId: string;
+	token: string;
+	nickname: string;
+}
 
 function App() {
 	const loginId = useRef<HTMLInputElement>(null);
 	const loginPaw = useRef<HTMLInputElement>(null);
+	const { userId, token, nickname } = useAuthStore();
 
 	async function loginFn(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -20,14 +29,19 @@ function App() {
 					password: loginPaw.current?.value,
 				}),
 			});
-			// const { data } = response;
-			window.location.href = "/home/";
+			const response: loginType = await res.json();
+			const { userId, token, nickname } = response; //값이 잘 들어오는 부분 확인함,,
+			console.log(response);
+			useAuthStore.getState().setLogin(userId, token, nickname); //Zustand store의 setLogin 호출
+			// window.location.href = "/home/";
 			return true;
 		} catch (error) {
 			console.log("로그인 에러!!", error);
 		}
 	}
-
+	console.log(userId);
+	console.log(token);
+	console.log(nickname);
 	return (
 		<div className="flex flex-col justify-center items-center min-h-screen bg-[linear-gradient(135deg,#667eea_0%,#764ba2_100%)] p-4">
 			<div className="mb-8 flex flex-col items-center text-white">
