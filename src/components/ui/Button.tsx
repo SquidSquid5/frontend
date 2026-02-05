@@ -16,7 +16,7 @@ export const ButtonVariants = cva(
 				blue: " bg-accent-blue",
 			},
 			size: {
-				default: "",
+				sm: "",
 				md: " w-[6.875rem] h-[2.375rem] text-[1rem] rounded-md",
 				lg: "w-[21.875rem] h-[7.5rem] text-[3rem] rounded-3xl",
 				wlg: "w-[24rem] h-[5.25rem] text-[2rem]",
@@ -24,7 +24,7 @@ export const ButtonVariants = cva(
 		},
 		defaultVariants: {
 			variant: "default",
-			size: "default",
+			size: "md",
 		},
 	},
 );
