@@ -110,3 +110,19 @@ const buttonVariants = cva(
 > https://velog.io/@qwzx16/tailwind%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%9A%A8%EC%9C%A8%EC%A0%81%EC%9D%B8-React-Component-%EA%B4%80%EB%A6%ACtailwind-merge-cva-clsx-%ED%8C%8C%ED%97%A4%EC%B9%98%EA%B8%B0
 > https://dev-102.tistory.com/entry/Tailwind-CSS-%EC%9E%98-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0-with-Clxs-CVA-twMerge
 > https://jforj.tistory.com/462#google_vignette
+
+### redux vs zustand vs recoil vs jotai
+
+우선 내가 상태를 관리할 부분은 로그인이다. 로그인을 했을 시 들어오는 값은 토큰, userId, 닉네임으로, 로그인, 로그아웃 함수와 로그인 유무, 사용자 정보가 있어야 한다.
+즉 단순하게 하나의 상태만이 돌아다니는 것이 아니라 상태와 동작이 세트로 움직여야 하기 때문에 Flux패턴인 redux vs zustand 중에 선택하기로 했다. (jotai는 추후 컴포넌트 단위로 상태를 관리해야 하는 부분이 있으면 추가할 예정이다.)
+recoil vs jotai는 아토믹 단위, 즉 피그마에서의 도형 하나하나의 단위로 컴포넌트를 관리하기 때문에 상태와 동작을 여러 개로 들고 다니는 로그인에는 맞지 않는다 판단했다.
+
+### redux vs zustand
+
+만약 해당 프로젝트의 규모가 컸다면 redux(툴킷과 확장 프로그램 존재)를 사용하는 게 맞지만, 그러한 부분이 아니며, 보일러 플레이트가 많은 redux보다 쉽고 간단한 zustand를 선택했다.
+그 외에도 zustand는 미들웨어를 제공하며 최소한의 보일러플레이트였기에 zustand를 사용하게 되었다...
+더불어 zustand는 1kb로 사용하기에도 그리 부담스럽지 않다. 간단한 작업 시에는 코드량의 차이도 있다.. .허나 복잡하게 상태를 관리하게 된다면 redux도 고려는 해봐야한다.
+
+## 트러블 슈팅
+
+### SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
