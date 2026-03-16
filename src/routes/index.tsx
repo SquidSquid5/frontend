@@ -21,7 +21,7 @@ function App() {
 	async function loginFn(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		try {
-			const res = await fetch("http://localhost:8080/api/users/login", {
+			const res = await fetch(import.meta.env.VITE_SERVER_URL, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
@@ -33,7 +33,7 @@ function App() {
 			const { userId, token, nickname } = response; //값이 잘 들어오는 부분 확인함,,
 			console.log(response);
 			useAuthStore.getState().setLogin(userId, token, nickname); //Zustand store의 setLogin 호출
-			// window.location.href = "/home/";
+			window.location.href = "/home/";
 			return true;
 		} catch (error) {
 			console.log("로그인 에러!!", error);
@@ -62,6 +62,8 @@ function App() {
 						className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400 transition-all placeholder:text-gray-300"
 						placeholder="아이디를 입력하세요"
 						type="text"
+						defaultValue="test@example.com"
+						// defaultValue는 계속 일일히 치기 귀찮아서 넣었는데, 나중에는 삭제해야한다.
 					/>
 					<label className="mt-4 mb-2 text-sm font-semibold text-gray-500 ml-1">
 						비밀번호
@@ -71,6 +73,8 @@ function App() {
 						className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400 transition-all placeholder:text-gray-300"
 						placeholder="비밀번호를 입력하세요"
 						type="password"
+						defaultValue="Test1234!"
+						// defaultValue는 계속 일일히 치기 귀찮아서 넣었는데, 나중에는 삭제해야한다.
 					/>
 					<p>test@example.com Test1234!</p>
 					<button
