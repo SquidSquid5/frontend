@@ -1,118 +1,107 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {
-  Zap,
-  Server,
-  Route as RouteIcon,
-  Shield,
-  Waves,
-  Sparkles,
-} from 'lucide-react'
+/** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
 
-export const Route = createFileRoute('/')({ component: App })
+import { createFileRoute } from "@tanstack/react-router";
+import { MessageCircle } from "lucide-react";
+import { useRef } from "react";
+import useAuthStore from "@/store/useAuthStore";
+
+export const Route = createFileRoute("/")({ component: App });
+
+interface loginType {
+	userId: string;
+	token: string;
+	nickname: string;
+}
 
 function App() {
-  const features = [
-    {
-      icon: <Zap className="w-12 h-12 text-cyan-400" />,
-      title: 'Powerful Server Functions',
-      description:
-        'Write server-side code that seamlessly integrates with your client components. Type-safe, secure, and simple.',
-    },
-    {
-      icon: <Server className="w-12 h-12 text-cyan-400" />,
-      title: 'Flexible Server Side Rendering',
-      description:
-        'Full-document SSR, streaming, and progressive enhancement out of the box. Control exactly what renders where.',
-    },
-    {
-      icon: <RouteIcon className="w-12 h-12 text-cyan-400" />,
-      title: 'API Routes',
-      description:
-        'Build type-safe API endpoints alongside your application. No separate backend needed.',
-    },
-    {
-      icon: <Shield className="w-12 h-12 text-cyan-400" />,
-      title: 'Strongly Typed Everything',
-      description:
-        'End-to-end type safety from server to client. Catch errors before they reach production.',
-    },
-    {
-      icon: <Waves className="w-12 h-12 text-cyan-400" />,
-      title: 'Full Streaming Support',
-      description:
-        'Stream data from server to client progressively. Perfect for AI applications and real-time updates.',
-    },
-    {
-      icon: <Sparkles className="w-12 h-12 text-cyan-400" />,
-      title: 'Next Generation Ready',
-      description:
-        'Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.',
-    },
-  ]
+	const loginId = useRef<HTMLInputElement>(null);
+	const loginPaw = useRef<HTMLInputElement>(null);
+	const { userId, token, nickname } = useAuthStore();
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <section className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10"></div>
-        <div className="relative max-w-5xl mx-auto">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <img
-              src="/tanstack-circle-logo.png"
-              alt="TanStack Logo"
-              className="w-24 h-24 md:w-32 md:h-32"
-            />
-            <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-              <span className="text-gray-300">TANSTACK</span>{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                START
-              </span>
-            </h1>
-          </div>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
-            The framework for next generation AI applications
-          </p>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-            Full-stack framework powered by TanStack Router for React and Solid.
-            Build modern applications with server functions, streaming, and type
-            safety.
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <a
-              href="https://tanstack.com/start"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50"
-            >
-              Documentation
-            </a>
-            <p className="text-gray-400 text-sm mt-2">
-              Begin your TanStack Start journey by editing{' '}
-              <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-                /src/routes/index.tsx
-              </code>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
-            >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  )
+	async function loginFn(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		try {
+			const res = await fetch(import.meta.env.VITE_SERVER_URL, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: loginId.current?.value,
+					password: loginPaw.current?.value,
+				}),
+			});
+			const response: loginType = await res.json();
+			const { userId, token, nickname } = response; //값이 잘 들어오는 부분 확인함,,
+			console.log(response);
+			useAuthStore.getState().setLogin(userId, token, nickname); //Zustand store의 setLogin 호출
+			window.location.href = "/home/";
+			return true;
+		} catch (error) {
+			console.log("로그인 에러!!", error);
+		}
+	}
+	console.log(userId);
+	console.log(token);
+	console.log(nickname);
+	return (
+		<div className="flex flex-col justify-center items-center min-h-screen bg-[linear-gradient(135deg,#667eea_0%,#764ba2_100%)] p-4">
+			<div className="mb-8 flex flex-col items-center text-white">
+				<div className="bg-white/20 p-3 rounded-full mb-7 backdrop-blur-sm">
+					<MessageCircle size={35} color="#ffffff" strokeWidth={2} />
+				</div>
+				<h1 className="text-4xl font-bold tracking-tight mb-2">ChatFlow</h1>
+				<p className="text-white/80 font-medium">실시간으로 소통하세요</p>
+			</div>
+			<div className="bg-white w-full max-w-105 rounded-[24px] shadow-2xl p-8">
+				<h2 className="text-2xl font-bold text-gray-800 mb-5">로그인</h2>
+				<form className="flex flex-col" onSubmit={loginFn}>
+					<label className="mb-2 text-sm font-semibold text-gray-500 ml-1">
+						아이디
+					</label>
+					<input
+						ref={loginId}
+						className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400 transition-all placeholder:text-gray-300"
+						placeholder="아이디를 입력하세요"
+						type="text"
+						defaultValue="test@example.com"
+						// defaultValue는 계속 일일히 치기 귀찮아서 넣었는데, 나중에는 삭제해야한다.
+					/>
+					<label className="mt-4 mb-2 text-sm font-semibold text-gray-500 ml-1">
+						비밀번호
+					</label>
+					<input
+						ref={loginPaw}
+						className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400 transition-all placeholder:text-gray-300"
+						placeholder="비밀번호를 입력하세요"
+						type="password"
+						defaultValue="Test1234!"
+						// defaultValue는 계속 일일히 치기 귀찮아서 넣었는데, 나중에는 삭제해야한다.
+					/>
+					<p>test@example.com Test1234!</p>
+					<button
+						type="submit"
+						className="mt-4 w-full py-3 bg-[linear-gradient(90deg,#667eea_0%,#764ba2_100%)] text-white font-bold rounded-xl hover:opacity-90 transition-opacity"
+					>
+						로그인
+					</button>
+				</form>
+				<div className="mt-5 flex flex-col items-center gap-3">
+					<button
+						type="button"
+						className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+					>
+						비밀번호를 잊으셨나요?
+					</button>
+					<div className="w-full pt-4 border-t border-gray-100 flex flex-col items-center gap-4">
+						<p className="text-sm text-gray-400">아직 계정이 없으신가요?</p>
+						<button
+							type="button"
+							className="w-full py-2 border-2 border-indigo-500 text-indigo-500 font-bold rounded-xl hover:bg-indigo-50 transition-colors"
+						>
+							회원가입
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }
