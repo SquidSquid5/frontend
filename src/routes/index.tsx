@@ -45,7 +45,7 @@ function App() {
 					<h1 className="text-5xl md:text-6xl font-black mb-6 leading-[1.15] tracking-tight">
 						사람과 사람을
 						<br />
-						<span className="text-blue-600 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">
+						<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-500">
 							이어주는
 						</span>{" "}
 						공간
@@ -66,7 +66,7 @@ function App() {
 						</button>
 						<button
 							type="button"
-							className="bg-white/80 backdrop-blur-md text-slate-700 px-8 py-4 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 transition-all"
+							className="bg-white/80 backdrop-blur-md text-slate-700 px-8 py-3 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 transition-all"
 						>
 							로그인
 						</button>
