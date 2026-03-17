@@ -1,14 +1,47 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
+
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageCircle, Shield, Users, Zap } from "lucide-react";
 import { useRef } from "react";
+import useAuthStore from "@/store/useAuthStore";
 
 export const Route = createFileRoute("/")({ component: App });
+
+interface loginType {
+	userId: string;
+	token: string;
+	nickname: string;
+}
 
 function App() {
 	const loginId = useRef<HTMLInputElement>(null);
 	const loginPaw = useRef<HTMLInputElement>(null);
+	const { userId, token, nickname } = useAuthStore();
 
+	async function loginFn(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		try {
+			const res = await fetch(import.meta.env.VITE_SERVER_URL, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: loginId.current?.value,
+					password: loginPaw.current?.value,
+				}),
+			});
+			const response: loginType = await res.json();
+			const { userId, token, nickname } = response; //값이 잘 들어오는 부분 확인함,,
+			console.log(response);
+			useAuthStore.getState().setLogin(userId, token, nickname); //Zustand store의 setLogin 호출
+			window.location.href = "/home/";
+			return true;
+		} catch (error) {
+			console.log("로그인 에러!!", error);
+		}
+	}
+	console.log(userId);
+	console.log(token);
+	console.log(nickname);
 	return (
 		<div className="min-h-screen bg-white text-slate-900">
 			<div>
