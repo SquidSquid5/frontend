@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { MessageCircle, Shield, Users, Zap } from "lucide-react";
+import Logo from "@/components/ui/Logo";
 
 const FEATURES = [
   {
@@ -29,12 +30,7 @@ export function App() {
     <div className="min-h-screen bg-white text-slate-900">
       <div>
         <header className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center">
-              <MessageCircle className="w-5 h-5 text-white fill-current" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">이음</span>
-          </div>
+          <Logo />
           <div className="flex items-center gap-6">
             <button
               type="button"
@@ -128,24 +124,20 @@ export function App() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-4 ">
-            <FeatureCard
-              icon={<MessageCircle className="w-6 h-6 text-blue-500" />}
-              bg="bg-blue-50/70"
-              title="실시간 채팅"
-              desc="메시지를 빠르게 주고받으며 팀과 소통하세요."
-            />
-            <FeatureCard
-              icon={<Users className="w-6 h-6 text-purple-500" />}
-              bg="bg-purple-50/70"
-              title="채팅방 관리"
-              desc="원하는 주제의 채팅방을 직접 만들고 관리하세요."
-            />
-            <FeatureCard
-              icon={<Shield className="w-6 h-6 text-emerald-500" />}
-              bg="bg-emerald-50/70"
-              title="입퇴장 알림"
-              desc="멤버의 입장과 퇴장을 실시간으로 확인하세요."
-            />
+            {FEATURES.map((feature) => (
+              <>
+                <FeatureCard
+                  icon={
+                    <feature.icon
+                      className={`w-6 h-6 text-${feature.color}-500`}
+                    />
+                  }
+                  bg={`bg-${feature.color}-50/70`}
+                  title={feature.title}
+                  desc={feature.desc}
+                />
+              </>
+            ))}
           </div>
         </main>
 
