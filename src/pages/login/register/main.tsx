@@ -1,14 +1,68 @@
 import { Link } from "@tanstack/react-router";
+import axios from "axios";
 import { ArrowLeft, Eye } from "lucide-react"; // 눈 아이콘 추가
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { AlertDemo } from "@/components/AlertCustom";
 import Logo from "@/components/ui/Logo";
 
 function RegisterMain() {
-  const idRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const nickNameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescription, setAlertDescription] = useState("");
+  const [alert, setAlert] = useState(false);
+
+  async function signUpApi() {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/users/register`,
+        {
+          email: "user@example.com",
+          password: "securePassword123!",
+          nickname: "사용자닉네임",
+        },
+      );
+      console.log(res);
+      return res.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("회원가입 에러!:", error.response?.data.message);
+
+        setAlertTitle("회원가입 오류");
+        setAlertDescription(error.response?.data.message);
+        setAlert(true);
+      }
+      console.log(error);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    signUpApi();
+  }
+
+  function handleFillRef() {
+    try {
+      if (nickNameRef.current && emailRef.current && passwordRef.current) {
+        nickNameRef.current.value = "콩쥐땃쥐";
+        emailRef.current.value = "test123@test.com";
+        passwordRef.current.value = "test123";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh p-4">
+      <AlertDemo
+        title={alertTitle}
+        description={alertDescription}
+        isOpen={alert}
+        onClose={() => setAlert(!alert)}
+      />
       <div className="w-full max-w-110 mb-6">
         <Link
           to="/"
@@ -30,12 +84,13 @@ function RegisterMain() {
             새 계정을 만들어보세요
           </p>
         </div>
-        <form className="space-y-1">
+        <form className="space-y-1" onSubmit={handleSubmit}>
           <div className="space-y-2 mb-4">
-            <p className="text-sm font-bold text-slate-700 ml-1 mb-2">이름</p>
+            <p className="text-sm font-bold text-slate-700 ml-1 mb-2">닉네임</p>
             <input
-              type="email"
-              placeholder="example@email.com"
+              type="text"
+              ref={nickNameRef}
+              placeholder="콩쥐땃쥐"
               className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
             />
           </div>
@@ -43,6 +98,7 @@ function RegisterMain() {
             <p className="text-sm font-bold text-slate-700 ml-1 mb-2">이메일</p>
             <input
               type="email"
+              ref={emailRef}
               placeholder="example@email.com"
               className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
             />
@@ -54,6 +110,7 @@ function RegisterMain() {
             <div className="relative">
               <input
                 type="password"
+                ref={passwordRef}
                 placeholder="6자 이상 입력하세요"
                 className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
               />
@@ -65,23 +122,35 @@ function RegisterMain() {
               </button>
             </div>
           </div>
-          <div className="space-y-2 mb-4">
+          {/* <div className="space-y-2 mb-4">
             <p className="text-sm font-bold text-slate-700 ml-1 mb-2">
               비밀번호 확인
             </p>
             <input
-              type="email"
-              placeholder="example@email.com"
+              type="password"
+              placeholder="비밀번호를 다시 입력하세요"
               className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
             />
-          </div>
+          </div> */}
           <button
-            type="button"
+            type="submit"
             className="w-full py-3.5 bg-[#3581FA] text-white rounded-2xl font-bold text-lg hover:bg-blue-600 transition-all mt-4"
           >
             회원가입
           </button>
         </form>
+        <div className="mt-5 p-5 bg-slate-50 rounded-2xl">
+          <p className="text-sm text-slate-500 font-normal">
+            테스트 계정으로 빠르게 회원가입하기
+          </p>
+          <button
+            type="button"
+            className="text-blue-600 text-sm font-bold mt-1 hover:underline flex items-center gap-1"
+            onClick={handleFillRef}
+          >
+            데모 계정 채우기 →
+          </button>
+        </div>
         <div className="mt-8 text-center">
           <p className="text-slate-400 font-normal text-sm">
             이미 계정이 있으신가요?
