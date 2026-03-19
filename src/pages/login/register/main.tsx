@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"; // 눈 아이콘 추가
 import { useRef, useState } from "react";
@@ -34,8 +34,8 @@ function RegisterMain() {
   });
 
   // 한 번에 관리할 수 있는 방법 찾아보기
-  const [hide, setHide] = useState(false);
-  const [hide2, setHide2] = useState(false);
+  const [hide, setHide] = useState(true);
+  const [hide2, setHide2] = useState(true);
 
   // const passwordArrray = {};
 
@@ -107,7 +107,7 @@ function RegisterMain() {
       if (nickNameRef.current && emailRef.current && passwordRef.current) {
         nickNameRef.current.value = "콩쥐땃쥐";
         emailRef.current.value = "test123@test.com";
-        passwordRef.current.value = "test123";
+        passwordRef.current.value = "test123!";
       }
     } catch (error) {
       console.log(error);
