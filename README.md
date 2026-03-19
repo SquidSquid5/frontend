@@ -184,6 +184,10 @@ if (nickNameRef.current && emailRef.current && passwordRef.current) {
 }
 ```
 
+참고:
+https://inpa.tistory.com/entry/ERROR-%E2%9A%A0%EF%B8%8F-Invalid-left-hand-side-in-assignment
+https://withwltn.tistory.com/39
+
 ### 그 외
 
 #### tailwind 세팅 관련 오류
