@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RegisterIndexRouteImport } from './routes/register/index'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
 import { Route as TestComponentTestRouteImport } from './routes/test/componentTest'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
@@ -25,6 +27,16 @@ import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ss
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterIndexRoute = RegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeIndexRoute = HomeIndexRouteImport.update({
@@ -88,6 +100,8 @@ export interface FileRoutesByFullPath {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/componentTest': typeof TestComponentTestRoute
   '/home/': typeof HomeIndexRoute
+  '/login/': typeof LoginIndexRoute
+  '/register/': typeof RegisterIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/componentTest': typeof TestComponentTestRoute
   '/home': typeof HomeIndexRoute
+  '/login': typeof LoginIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -117,6 +133,8 @@ export interface FileRoutesById {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/componentTest': typeof TestComponentTestRoute
   '/home/': typeof HomeIndexRoute
+  '/login/': typeof LoginIndexRoute
+  '/register/': typeof RegisterIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -133,6 +151,8 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/test/componentTest'
     | '/home/'
+    | '/login/'
+    | '/register/'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
@@ -147,6 +167,8 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/test/componentTest'
     | '/home'
+    | '/login'
+    | '/register'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
@@ -161,6 +183,8 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/test/componentTest'
     | '/home/'
+    | '/login/'
+    | '/register/'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/start/api-request'
@@ -176,6 +200,8 @@ export interface RootRouteChildren {
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   TestComponentTestRoute: typeof TestComponentTestRoute
   HomeIndexRoute: typeof HomeIndexRoute
+  LoginIndexRoute: typeof LoginIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
@@ -193,6 +219,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof RegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home/': {
@@ -280,6 +320,8 @@ const rootRouteChildren: RootRouteChildren = {
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   TestComponentTestRoute: TestComponentTestRoute,
   HomeIndexRoute: HomeIndexRoute,
+  LoginIndexRoute: LoginIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoApiTqTodosRoute: DemoApiTqTodosRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
