@@ -48,11 +48,20 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 interface alertType {
   title: string;
   description: string;
+  className?: string;
   isOpen: boolean;
+  isError?: boolean;
   onClose: () => void;
 }
 
-export function AlertDemo({ title, description, isOpen, onClose }: alertType) {
+export function AlertDemo({
+  title,
+  description,
+  className,
+  isOpen,
+  isError,
+  onClose,
+}: alertType) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -65,21 +74,24 @@ export function AlertDemo({ title, description, isOpen, onClose }: alertType) {
             className="w-full max-w-md px-4"
           >
             <div className="grid gap-4">
-              <Alert>
-                <CheckCircle2Icon className="h-4 w-4" />
+              <Alert
+                className={className}
+                variant={`${isError ? "destructive" : "default"}`}
+              >
+                {isError ? (
+                  <AlertCircleIcon className="h-4 w-4" />
+                ) : (
+                  <CheckCircle2Icon className="h-4 w-4" />
+                )}
+
                 <AlertTitle>{title}</AlertTitle>
-                <AlertDescription>{description}</AlertDescription>
-              </Alert>
-
-              <Alert variant="destructive">
-                <AlertCircleIcon className="h-4 w-4" />
-                <AlertTitle>
-                  {title}
-
-                  <button type="button" onClick={onClose}>
-                    <X />
-                  </button>
-                </AlertTitle>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="shrink-0 self-center"
+                >
+                  <X className="h-4 w-4" />
+                </button>
                 <AlertDescription>{description}</AlertDescription>
               </Alert>
             </div>
