@@ -4,6 +4,7 @@ import { ArrowLeft, Eye, EyeOff } from "lucide-react"; // 눈 아이콘 추가
 import { useRef, useState } from "react";
 import { AlertDemo } from "@/components/AlertCustom";
 import Logo from "@/components/ui/Logo";
+import { instance } from "@/utils/api/axiosInstance";
 
 function RegisterMain() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -13,11 +14,6 @@ function RegisterMain() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-
-  // const [alertTitle, setAlertTitle] = useState("");
-  // const [alertDescription, setAlertDescription] = useState("");
-  // const [alert, setAlert] = useState(false);
-  // const [isErr, setIsErr] = useState(false);
 
   const [alertConfig, setAlertConfig] = useState<{
     isOpen: boolean;
@@ -37,8 +33,6 @@ function RegisterMain() {
   const [hide, setHide] = useState(true);
   const [hide2, setHide2] = useState(true);
 
-  // const passwordArrray = {};
-
   async function signUpApi() {
     try {
       const res = await axios.post(
@@ -50,11 +44,7 @@ function RegisterMain() {
         },
       );
       console.log(res);
-      // setAlertTitle("회원가입 성공");
-      // setAlertDescription("회원가입을 완료했습니다. 로그인을 진행해주세요.");
-      // setAlert(true);
-      // setIsErr(false);
-      // navigate({ to: "/login" });
+
       setAlertConfig({
         isOpen: true,
         title: "회원가입 성공",
@@ -67,10 +57,6 @@ function RegisterMain() {
       if (axios.isAxiosError(error)) {
         console.log("회원가입 에러!:", error.response?.data.message);
 
-        // setAlertTitle("회원가입 오류");
-        // setAlertDescription(error.response?.data.message);
-        // setAlert(true);
-        // setIsErr(true);
         setAlertConfig({
           isOpen: true,
           title: "회원가입 오류",
@@ -86,10 +72,6 @@ function RegisterMain() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (password !== passwordRef.current?.value) {
-      // setAlertTitle("회원가입 오류");
-      // setAlertDescription("비밀번호가 맞지 않습니다!");
-      // setAlert(true);
-      // setIsErr(true);
       setAlertConfig({
         isOpen: true,
         title: "회원가입 오류",
@@ -113,8 +95,6 @@ function RegisterMain() {
       console.log(error);
     }
   }
-
-  // function handleHide() {}
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh p-4">
