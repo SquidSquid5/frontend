@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { AlertDemo } from "@/components/AlertCustom";
 import Logo from "@/components/ui/Logo";
 import useAuthStore from "@/store/useAuthStore";
+import { loginService } from "@/utils/api/service";
 
 function LoginMain() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -28,19 +29,46 @@ function LoginMain() {
   const [isLoading, setIsLoading] = useState(false);
   const [hide, setHide] = useState(true);
 
-  async function signInApi() {
+  // async function signInApi() {
+  //   try {
+  //     // const res = await axios.post(
+  //     //   `${import.meta.env.VITE_SERVER_URL}/users/login`,
+  //     //   {
+  //     //     email: emailRef.current?.value,
+  //     //     password: passwordRef.current?.value,
+  //     //   },
+  //     // );
+  //     // console.log(res);
+  //     // setIsLoading(false);
+  //     // useAuthStore.getState().setLogin(res.data.nickname, res.data.token);
+  //     navigate({ to: "/home" });
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.log("로그인 에러! :", error.response?.data.message);
+  //       setAlertConfig({
+  //         isOpen: true,
+  //         title: "로그인 오류",
+  //         description: error.response?.data.message,
+  //         isErr: true,
+  //         onClose: () => setAlertConfig((prev) => ({ ...prev, isOpen: false })),
+  //       });
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // }
+
+  const signInApi = async () => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/users/login`,
-        {
-          email: emailRef.current?.value,
-          password: passwordRef.current?.value,
-        },
-      );
-      console.log(res);
-      setIsLoading(false);
-      useAuthStore.getState().setLogin(res.data.nickname, res.data.token);
-      navigate({ to: "/home" });
+      if (emailRef.current && passwordRef.current) {
+        const res = await loginService().logIn(
+          emailRef.current.value,
+          passwordRef.current.value,
+        );
+        if (res) {
+          useAuthStore.getState().setLogin(res.nickname, res.token);
+          navigate({ to: "/home" });
+        }
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("로그인 에러! :", error.response?.data.message);
@@ -54,7 +82,7 @@ function LoginMain() {
         setIsLoading(false);
       }
     }
-  }
+  };
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     setIsLoading(true);
