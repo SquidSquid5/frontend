@@ -1,3 +1,5 @@
+하기 전에 pnpm 이 설치되어야 함
+
 Welcome to your new TanStack app!
 
 # Getting Started
@@ -5,8 +7,8 @@ Welcome to your new TanStack app!
 To run this application:
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 # Building For Production
@@ -14,7 +16,7 @@ npm run dev
 To build this application for production:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## Testing
@@ -22,7 +24,7 @@ npm run build
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-npm run test
+pnpm test
 ```
 
 ## Styling
@@ -34,9 +36,9 @@ This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
 
 ```bash
-npm run lint
-npm run format
-npm run check
+pnpm lint
+pnpm format
+pnpm check
 ```
 
 ## Shadcn
