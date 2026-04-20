@@ -1,6 +1,5 @@
-import axios from "axios";
 import { instance } from "../axios";
-import { LoginRequest, RegisterRequest } from "../types/authType";
+import type { LoginRequest } from "../types/authType";
 
 // export const TestService = () => {
 //   /**
@@ -26,6 +25,7 @@ export const loginService = () => {
         password,
       })) as LoginRequest;
       console.log("res", response);
+
       return response;
     } catch (error) {
       return Promise.reject(error);
