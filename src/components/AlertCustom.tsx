@@ -45,26 +45,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircleIcon, CheckCircle2Icon, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-interface alertType {
+export interface alertType {
   title: string;
   description: string;
-  className?: string;
-  isOpen: boolean;
-  isError?: boolean;
+  variant?: boolean;
+}
+
+interface alertDemoProps {
+  alert: alertType | null;
   onClose: () => void;
 }
 
-export function AlertDemo({
-  title,
-  description,
-  className,
-  isOpen,
-  isError,
-  onClose,
-}: alertType) {
+export function AlertDemo({ alert, onClose }: alertDemoProps) {
   return (
     <AnimatePresence>
-      {isOpen && (
+      {alert && (
         <div className="fixed inset-0 bg-black/30 z-50 flex justify-center items-start pt-10">
           <motion.div
             initial={{ opacity: 0, y: -50 }} // 시작 위치 (위로 50px, 투명)
@@ -74,17 +69,14 @@ export function AlertDemo({
             className="w-full max-w-md px-4"
           >
             <div className="grid gap-4">
-              <Alert
-                className={className}
-                variant={`${isError ? "destructive" : "default"}`}
-              >
-                {isError ? (
+              <Alert variant={`${alert.variant ? "destructive" : "default"}`}>
+                {alert.variant ? (
                   <AlertCircleIcon className="h-4 w-4" />
                 ) : (
                   <CheckCircle2Icon className="h-4 w-4" />
                 )}
 
-                <AlertTitle>{title}</AlertTitle>
+                <AlertTitle>{alert.title}</AlertTitle>
                 <button
                   type="button"
                   onClick={onClose}
@@ -92,7 +84,7 @@ export function AlertDemo({
                 >
                   <X className="h-4 w-4" />
                 </button>
-                <AlertDescription>{description}</AlertDescription>
+                <AlertDescription>{alert.description}</AlertDescription>
               </Alert>
             </div>
           </motion.div>
