@@ -52,9 +52,11 @@ instance.interceptors.response.use(
       headers: response.headers,
       data: response.data,
     });
+
     return response.data; // 서버에서 받는 데이터가 data 속성에 들어있는 경우
     // return response.data.data; // 서버에서 받는 데이터가 data.data 속성에 들어있는 경우
   },
+
   async (error: AxiosError) => {
     console.warn(error.config?.url, " API response error", {
       response_data: error.response?.data,
@@ -68,10 +70,27 @@ instance.interceptors.response.use(
         data: error.config?.data,
       },
     });
-
-    const errorData: Shared.ErrorResponse = error.response
-      ?.data as Shared.ErrorResponse;
-    alert(`${errorData.errorCode}: ${errorData.message}`);
+    // 400 404 500     401 403
+    if (error.status === 400) {
+      console.log("400");
+      return console.log("400");
+    }
+    if (error.status === 401) {
+      console.log("401");
+      return console.log("401");
+    }
+    if (error.status === 403) {
+      console.log("403");
+      return console.log("403");
+    }
+    if (error.status === 404) {
+      console.log("404");
+      return console.log("404");
+    }
+    if (error.status === 405) {
+      console.log("405");
+      return console.log("405");
+    }
     return Promise.reject(error);
   },
 );
@@ -82,7 +101,7 @@ instance.interceptors.response.use(
 //   // aixosinstance가 아닌 다른 인스턴스를 사용해야 한다.
 // }
 
-// 그리고 필요하지 않은 interceptor는 다음 코드를 통해 삭제할 수 있습니다.
+// 그리고 필요하지 않은 interceptor는 다음 코드를 통해 삭제할 수 있다.
 
 // const myInterceptor = axios.interceptors.request.use(function () {
 //   /*...*/
