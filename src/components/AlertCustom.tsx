@@ -49,6 +49,7 @@ export interface alertType {
   title: string;
   description: string;
   variant?: boolean;
+  onCustomClose?: () => void;
 }
 
 interface alertDemoProps {
@@ -79,7 +80,7 @@ export function AlertDemo({ alert, onClose }: alertDemoProps) {
                 <AlertTitle>{alert.title}</AlertTitle>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={alert.onCustomClose || onClose}
                   className="shrink-0 self-center"
                 >
                   <X className="h-4 w-4" />
