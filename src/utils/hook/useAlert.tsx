@@ -1,29 +1,28 @@
-import { alertType } from "@/components/AlertCustom";
 import { useState } from "react";
+import type { alertType } from "@/components/AlertCustom";
 
 function useAlert() {
   const [alertData, setAlertData] = useState<null | {
     title: string;
     description: string;
     variant?: boolean;
+    onCustomClose?: () => void;
   }>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
-  function showAlert({ title, description, variant }: alertType) {
-    if (variant) {
-      setAlertData({ title, description, variant });
-    } else {
-      setAlertData({ title, description });
-    }
-    setIsOpen(true);
+  function showAlert({
+    title,
+    description,
+    variant,
+    onCustomClose,
+  }: alertType) {
+    setAlertData({ title, description, variant, onCustomClose });
   }
 
   function closeAlert() {
     setAlertData(null);
-    setIsOpen(false);
   }
 
-  return { showAlert, closeAlert, isOpen, alertData };
+  return { showAlert, closeAlert, alertData };
 }
 
 export default useAlert;
