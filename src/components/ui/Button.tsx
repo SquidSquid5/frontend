@@ -1,25 +1,31 @@
-import { cva, VariantProps } from "class-variance-authority";
-import { ButtonHTMLAttributes, FC } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import type { ButtonHTMLAttributes, FC } from "react";
 import cn from "@/utils/cn";
 
 export const ButtonVariants = cva(
   `
-  flex justify-center items-center active:scale-95 rounded-xl 
-  text-sm font-bold text-black transition-all shadow-md
-  hover:scale-105 duration-200
+  flex justify-center items-center active:scale-95 transition-all duration-200
+  disabled:opacity-50 disabled:pointer-events-none font-bold
   `,
   {
     variants: {
       variant: {
-        default: " shadow-none active:scale-100",
-        grey: " bg-slate-buttongrey ",
-        blue: " bg-accent-blue",
+        default: "shadow-none active:scale-100 text-slate-500",
+        blue: "bg-[#3581FA] text-white hover:bg-blue-600 shadow-md",
+        grey: "bg-slate-100 text-slate-700 hover:bg-slate-200 shadow-none",
+        link: "bg-transparent text-blue-600 hover:underline shadow-none p-0 h-auto active:scale-100",
+        // [추가] 배경 없고 아이콘 강조에 최적화된 ghost
+        ghost:
+          "bg-transparent text-slate-400 hover:text-slate-600 shadow-none active:scale-90",
       },
       size: {
-        sm: "",
-        md: " w-[6.875rem] h-[2.375rem] text-[1rem] rounded-md",
-        lg: "w-[21.875rem] h-[7.5rem] text-[3rem] rounded-3xl",
-        wlg: "w-[24rem] h-[5.25rem] text-[2rem]",
+        md: "w-[6.875rem] h-[2.375rem] text-[1rem] rounded-xl",
+        sm: "px-4 py-2 text-sm rounded-lg",
+        full: "w-full py-3.5 text-lg rounded-2xl",
+        // [추가] 아이콘 버튼용 (정사각형)
+        icon: "w-10 h-10 p-0 rounded-full",
+        xs: "text-xs px-0 py-0",
+        normal: "text-sm px-0 py-0",
       },
     },
     defaultVariants: {
@@ -30,7 +36,8 @@ export const ButtonVariants = cva(
 );
 
 interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof ButtonVariants> {
   label?: string;
   children?: React.ReactElement;
