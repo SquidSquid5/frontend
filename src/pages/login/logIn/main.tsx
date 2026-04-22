@@ -3,61 +3,24 @@ import axios from "axios";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"; // 눈 아이콘 추가
 import { useRef, useState } from "react";
 import { AlertDemo } from "@/components/AlertCustom";
+import Button from "@/components/ui/Button";
 import Logo from "@/components/ui/Logo";
 import useAuthStore from "@/store/useAuthStore";
 import { loginService } from "@/utils/api/service";
+import useAlert from "@/utils/hook/useAlert";
 
 function LoginMain() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  //추후 validation, disabled 처리 초기화를 쉽게 하려면 useState로 변경 필요
 
   const navigate = useNavigate();
 
-  const [alertConfig, setAlertConfig] = useState<{
-    isOpen: boolean;
-    title: string;
-    description: string;
-    isErr: boolean;
-    className?: string;
-    onClose?: () => void;
-  }>({
-    isOpen: false,
-    title: "",
-    description: "",
-    isErr: false,
-  });
   const [isLoading, setIsLoading] = useState(false);
-  const [hide, setHide] = useState(true);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
+  const { closeAlert, alertData, showAlert } = useAlert();
 
-  // async function signInApi() {
-  //   try {
-  //     // const res = await axios.post(
-  //     //   `${import.meta.env.VITE_SERVER_URL}/users/login`,
-  //     //   {
-  //     //     email: emailRef.current?.value,
-  //     //     password: passwordRef.current?.value,
-  //     //   },
-  //     // );
-  //     // console.log(res);
-  //     // setIsLoading(false);
-  //     // useAuthStore.getState().setLogin(res.data.nickname, res.data.token);
-  //     navigate({ to: "/home" });
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       console.log("로그인 에러! :", error.response?.data.message);
-  //       setAlertConfig({
-  //         isOpen: true,
-  //         title: "로그인 오류",
-  //         description: error.response?.data.message,
-  //         isErr: true,
-  //         onClose: () => setAlertConfig((prev) => ({ ...prev, isOpen: false })),
-  //       });
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // }
-
-  const signInApi = async () => {
+  const handleLogin = async () => {
     try {
       if (emailRef.current && passwordRef.current) {
         const res = await loginService().logIn(
@@ -71,49 +34,42 @@ function LoginMain() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("로그인 에러! :", error.response?.data.message);
-        setAlertConfig({
-          isOpen: true,
+        showAlert({
           title: "로그인 오류",
           description: error.response?.data.message,
-          isErr: true,
-          onClose: () => setAlertConfig((prev) => ({ ...prev, isOpen: false })),
+          variant: true,
         });
-        setIsLoading(false);
+      } else {
+        console.log(error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    setIsLoading(true);
     e.preventDefault();
-    signInApi();
+    if (emailRef.current?.value.trim() && passwordRef.current?.value.trim()) {
+      setIsLoading(true);
+      handleLogin();
+    } else {
+      return showAlert({
+        title: "회원가입 오류",
+        description: "모든 항목을 입력해주세요",
+        variant: true,
+      });
+    }
   }
 
   function handleFillRef() {
-    try {
-      if (emailRef.current && passwordRef.current) {
-        emailRef.current.value = "test123@test.com";
-        passwordRef.current.value = "test123!";
-      }
-    } catch (error) {
-      console.log("에러!", error);
+    if (emailRef.current && passwordRef.current) {
+      emailRef.current.value = "test123@test.com";
+      passwordRef.current.value = "test123!";
     }
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh p-4">
-      <AlertDemo
-        title={alertConfig.title}
-        description={alertConfig.description}
-        isOpen={alertConfig.isOpen}
-        className={alertConfig.className}
-        onClose={
-          alertConfig.onClose ||
-          (() => setAlertConfig((prev) => ({ ...prev, isOpen: false })))
-        }
-        isError={alertConfig.isErr}
-      />
       <div className="w-full max-w-110 mb-6">
         <Link
           to="/"
@@ -149,38 +105,40 @@ function LoginMain() {
             </p>
             <div className="relative">
               <input
-                type={`${hide ? "password" : "text"}`}
+                type={`${isPasswordVisible ? "password" : "text"}`}
                 ref={passwordRef}
                 placeholder="비밀번호를 입력하세요"
                 className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
               />
-              <button
+              <Button
                 type="button"
-                onClick={() => setHide(!hide)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" // 위치만 지정
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
               >
-                {hide ? <Eye size={20} /> : <EyeOff size={20} />}
-              </button>
+                {isPasswordVisible ? <Eye size={20} /> : <EyeOff size={20} />}
+              </Button>
             </div>
           </div>
-          <button
+          <Button
             type="submit"
-            className={`${isLoading ? "bg-[#5996f8]" : "bg-[#3581FA]"} w-full py-3.5 text-white rounded-2xl font-bold text-lg hover:bg-blue-600 transition-all mt-4`}
-          >
-            {isLoading ? "로그인 중 ..." : "로그인"}
-          </button>
+            size="full"
+            variant={"blue"}
+            label={isLoading ? "로그인 중 ..." : "로그인"}
+          />
         </form>
         <div className="mt-5 p-5 bg-slate-50 rounded-2xl">
           <p className="text-sm text-slate-500 font-normal">
             테스트 계정으로 빠르게 시작하기
           </p>
-          <button
+          <Button
             type="button"
+            variant="link"
+            size="normal"
+            label="데모 계정 채우기 →"
             onClick={handleFillRef}
-            className="text-blue-600 text-sm font-bold mt-1 hover:underline flex items-center gap-1"
-          >
-            데모 계정 채우기 →
-          </button>
+          />
         </div>
         <div className="mt-8 text-center">
           <p className="text-slate-400 font-normal text-sm">
@@ -194,6 +152,8 @@ function LoginMain() {
           </p>
         </div>
       </div>
+      {/* alert 팝업!! */}
+      <AlertDemo alert={alertData} onClose={closeAlert} />
     </div>
   );
 }
