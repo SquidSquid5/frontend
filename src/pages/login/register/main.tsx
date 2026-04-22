@@ -4,34 +4,22 @@ import { ArrowLeft, Eye, EyeOff } from "lucide-react"; // 눈 아이콘 추가
 import { useRef, useState } from "react";
 import { AlertDemo } from "@/components/AlertCustom";
 import Logo from "@/components/ui/Logo";
-import { instance } from "@/utils/api/axiosInstance";
+import useAlert from "@/utils/hook/useAlert";
 
 function RegisterMain() {
   const emailRef = useRef<HTMLInputElement>(null);
   const nickNameRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState<string>("");
+  const [checkPassword, setCheckPassword] = useState("");
 
   const navigate = useNavigate();
-
-  const [alertConfig, setAlertConfig] = useState<{
-    isOpen: boolean;
-    title: string;
-    description: string;
-    isErr: boolean;
-    className?: string;
-    onClose?: () => void;
-  }>({
-    isOpen: false,
-    title: "",
-    description: "",
-    isErr: false,
-  });
 
   // 한 번에 관리할 수 있는 방법 찾아보기
   const [hide, setHide] = useState(true);
   const [hide2, setHide2] = useState(true);
+
+  const { closeAlert, alertData, showAlert } = useAlert();
 
   async function signUpApi() {
     try {
@@ -39,30 +27,26 @@ function RegisterMain() {
         `${import.meta.env.VITE_SERVER_URL}/users/register`,
         {
           email: emailRef.current?.value,
-          password: passwordRef.current?.value,
+          password: password,
           nickname: nickNameRef.current?.value,
         },
       );
       console.log(res);
 
-      setAlertConfig({
-        isOpen: true,
+      showAlert({
         title: "회원가입 성공",
         description: "회원가입을 완료했습니다. 로그인을 진행해주세요.",
-        isErr: false,
-        className: "text-blue-500",
-        onClose: () => navigate({ to: "/login" }),
+        variant: false,
+        onChange: () => navigate({ to: "/login" }),
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("회원가입 에러!:", error.response?.data.message);
 
-        setAlertConfig({
-          isOpen: true,
+        showAlert({
           title: "회원가입 오류",
           description: error.response?.data.message,
-          isErr: true,
-          onClose: () => setAlertConfig((prev) => ({ ...prev, isOpen: false })),
+          variant: true,
         });
       }
       console.log(error);
@@ -71,13 +55,22 @@ function RegisterMain() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (password !== passwordRef.current?.value) {
-      setAlertConfig({
-        isOpen: true,
+    if (checkPassword !== password) {
+      return showAlert({
         title: "회원가입 오류",
         description: "비밀번호가 맞지 않습니다!",
-        isErr: true,
-        onClose: () => setAlertConfig((prev) => ({ ...prev, isOpen: false })),
+        variant: true,
+      });
+    } else if (
+      !emailRef.current?.value ||
+      !password ||
+      !nickNameRef.current?.value ||
+      !checkPassword
+    ) {
+      return showAlert({
+        title: "회원가입 오류",
+        description: "모든 항목을 입력해주세요",
+        variant: true,
       });
     }
 
@@ -86,10 +79,12 @@ function RegisterMain() {
 
   function handleFillRef() {
     try {
-      if (nickNameRef.current && emailRef.current && passwordRef.current) {
+      console.log("우선 들어오긴 함....");
+      if (nickNameRef.current && emailRef.current) {
         nickNameRef.current.value = "콩쥐땃쥐";
         emailRef.current.value = "test123@test.com";
-        passwordRef.current.value = "test123!";
+        setPassword("test123!");
+        setCheckPassword("test123!");
       }
     } catch (error) {
       console.log(error);
@@ -98,17 +93,6 @@ function RegisterMain() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh p-4">
-      <AlertDemo
-        title={alertConfig.title}
-        description={alertConfig.description}
-        isOpen={alertConfig.isOpen}
-        className={alertConfig.className}
-        onClose={
-          alertConfig.onClose ||
-          (() => setAlertConfig((prev) => ({ ...prev, isOpen: false })))
-        }
-        isError={alertConfig.isErr}
-      />
       <div className="w-full max-w-110 mb-6">
         <Link
           to="/"
@@ -156,8 +140,9 @@ function RegisterMain() {
             <div className="relative">
               <input
                 type={`${hide ? "password" : "text"}`}
-                ref={passwordRef}
                 placeholder="6자 이상 입력하세요"
+                onChange={(e) => setPassword(e.currentTarget.value)}
+                value={password}
                 className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
               />
               <button
@@ -177,7 +162,8 @@ function RegisterMain() {
               <input
                 type={`${hide2 ? "password" : "text"}`}
                 placeholder="비밀번호를 다시 입력하세요"
-                onChange={(e) => setPassword(e.currentTarget.value)}
+                onChange={(e) => setCheckPassword(e.currentTarget.value)}
+                value={checkPassword}
                 className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-slate-300 text-slate-700"
               />
               <button
@@ -220,6 +206,7 @@ function RegisterMain() {
           </p>
         </div>
       </div>
+      <AlertDemo alert={alertData} onClose={closeAlert} />
     </div>
   );
 }
