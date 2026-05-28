@@ -5,7 +5,12 @@ function Home() {
   console.log(token, nickname, isLoggedIn);
 
   return (
-    <div>
+    <div className="flex flex-row min-h-full">
+      <div className="min-h-full bg-white">
+        <div>
+          <p>{nickname}</p>
+        </div>
+      </div>
       <p className="text-">index</p>
     </div>
   );

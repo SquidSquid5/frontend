@@ -37,7 +37,7 @@ function RegisterMain() {
         title: "회원가입 성공",
         description: "회원가입을 완료했습니다. 로그인을 진행해주세요.",
         variant: false,
-        onChange: () => navigate({ to: "/login" }),
+        onCustomClose: () => navigate({ to: "/login" }),
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
